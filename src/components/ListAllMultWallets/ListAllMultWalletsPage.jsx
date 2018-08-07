@@ -7,35 +7,38 @@ class ListAllMultWallets extends Component {
         this.state = {
             wallets: []
         }
-    }
-
-    componentDidMount() {
-        let wallets = []
-        for (let key in localStorage) {
-            if (key === "length") {
-                break;
-            }
-            let obj = {
-                "address": key,
-                "balance": localStorage.getItem(key)
-            };
-
-            wallets.push(obj);
-        }
-
-        this.setState({ wallets })
 
         // bind
 
         this.walletDelete = this.walletDelete.bind(this);
-        this.walletDetails = this.walletDetails.bind(this);
     }
 
-    walletDetails() {
-        //TODO
+    componentDidMount() {
+        let wallets = [];
+        for (let key in localStorage) {
+            if (key === 'length') {
+                break;
+            }
+
+            let addressDetails = JSON.parse(localStorage.getItem(key));
+
+            let wallet = {
+                'address': key,
+                'balance': addressDetails.balance,
+                'owners': addressDetails.owners,
+                'required': addressDetails.required,
+                'dailyLimit': addressDetails.dailyLimit
+            };
+
+            wallets.push(wallet);
+
+        }
+
+        this.setState({ wallets });
+
     }
 
-    walletDelete() {
+    walletDelete(address) {
         //TODO
     }
 
@@ -44,13 +47,18 @@ class ListAllMultWallets extends Component {
             <div>
                 <h1>List All Mult Sig Wallets</h1>
                 <section>
-                    {this.state.wallets.map((obj) => {
+                    {this.state.wallets.map((walletData) => {
+
                         return (
-                            <article key={obj.address}>
-                                <div>address: {obj.address}</div>
-                                <div>balance: {obj.balance} Ether</div>
-                                <button onClick={this.walletDetails}>Details</button>
-                                <button onClick={this.walletDelete}>Delete</button>
+                            <article key={walletData.address}>
+                                <div>address: {walletData.address}</div>
+                                <div>balance: {walletData.balance} Ether</div>
+                                <div>owners: {walletData.owners.map((ownerAddress) => {
+                                    return <p key={ownerAddress}>{ownerAddress}</p>
+                                })}</div>
+                                <div>required: {walletData.required} Ether</div>
+                                <div>dailyLimit: {walletData.dailyLimit} Ether</div>
+                                <button onClick={this.walletDelete(walletData.address)}>Delete</button>
                             </article>
                         )
                     })}

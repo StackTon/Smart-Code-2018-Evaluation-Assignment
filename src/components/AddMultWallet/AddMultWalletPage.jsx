@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import Input from '../common/Input';
-import { getWeb3, MutSigWalletABI } from "../../api/remote.js";
+import { getWeb3, MutSigWalletABI } from '../../api/remote.js';
 
 class AddMultWallet extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            address: "",
+            address: '',
             web3: null
         };
 
@@ -34,35 +34,44 @@ class AddMultWallet extends Component {
         this.setState({ [e.target.name]: e.target.value });
     }
 
-        onSubmitHandler(e) {
+    onSubmitHandler(e) {
         e.preventDefault();
         //TODO check if address is valid
 
-        //TODO implment add wallet form eth blockchain 
         const contractInstance = this.state.web3.eth.contract(MutSigWalletABI).at(this.state.address);
 
         contractInstance.MAX_OWNER_COUNT.call((err, res) => {
-            if (err) {
-                console.log(err);
-                return;
-            }
+            handleError(err);
 
-            if (Number(res + "") === 50) {
-                this.state.web3.eth.getBalance(this.state.address, (err, res) => {
-                    if (err) {
-                        console.log(err);
-                        return;
-                    }
-                    let ethers = this.state.web3.fromWei(res, 'ether');
+            //TODO implement better checking for mutSig walltes
+            if (Number(res + '') === 50) {
+                this.state.web3.eth.getBalance(this.state.address, (err, contractBalance) => {
+                    handleError(err);
 
-                    localStorage.setItem(this.state.address, ethers);
+                    let addressDetails = {};
+                    addressDetails.balance = this.state.web3.fromWei(contractBalance, 'ether');
+
+                    contractInstance.getOwners.call((err, owners) => {
+                        handleError(err);
+
+                        addressDetails.owners = owners;
+
+                        contractInstance.dailyLimit.call((err, dailyLimit) => {
+                            handleError(err);
+
+                            addressDetails.dailyLimit = dailyLimit + '';
+
+                            contractInstance.required.call((err, required) => {
+                                handleError(err);
+
+                                addressDetails.required = required + '';
+                                localStorage.setItem(this.state.address, JSON.stringify(addressDetails));
+                            })
+                        })
+                    })
                 });
-                
             }
         })
-
-
-        //TOOD if the address is not for mut sig wallet display error
     }
 
     render() {
@@ -71,16 +80,21 @@ class AddMultWallet extends Component {
                 <h2>Add Mult Sig Wallet</h2>
                 <form onSubmit={this.onSubmitHandler}>
                     <Input
-                        name="address"
+                        name='address'
                         value={this.state.address}
                         onChange={this.onChangeHandler}
-                        label="Address"
+                        label='Address'
                     />
-                    <input className="btn btn-outline-primary" type="submit" value="Add" />
+                    <input className='btn btn-outline-primary' type='submit' value='Add' />
                 </form>
             </div>
         );
     }
+}
+
+function handleError(err) {
+    console.log(err);
+    return;
 }
 
 export default AddMultWallet;
