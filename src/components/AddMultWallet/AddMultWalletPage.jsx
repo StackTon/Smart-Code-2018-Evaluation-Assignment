@@ -60,7 +60,7 @@ class AddMultWallet extends Component {
                         contractInstance.dailyLimit.call((err, dailyLimit) => {
                             handleError(err);
 
-                            addressDetails.dailyLimit = dailyLimit + '';
+                            addressDetails.dailyLimit = this.state.web3.fromWei(dailyLimit, 'ether');
 
                             contractInstance.required.call((err, required) => {
                                 handleError(err);
@@ -88,7 +88,7 @@ class AddMultWallet extends Component {
 
                                         if (i === transactionCount - 1) {
                                             addressDetails.averageTransactionAmount /= addressDetails.transactionCount;
-                                            console.log(addressDetails)
+                                            
                                             localStorage.setItem(newWalletAddress, JSON.stringify(addressDetails));
                                         }
                                     }
@@ -103,14 +103,14 @@ class AddMultWallet extends Component {
 
     render() {
         return (
-            <div>
+            <div className="add">
                 <h2>Add Mult Sig Wallet</h2>
                 <form onSubmit={this.onSubmitHandler}>
                     <Input
                         name='walletAddress'
                         value={this.state.walletAddress}
                         onChange={this.onChangeHandler}
-                        label='Wfallet Address'
+                        label='Wallet Address'
                     />
 
                     <Input
@@ -119,7 +119,7 @@ class AddMultWallet extends Component {
                         onChange={this.onChangeHandler}
                         label='Wallet Name (optional)'
                     />
-                    <input type='submit' value='Add' />
+                    <input type="submit" className="btn btn-outline-success" value='Add' />
                 </form>
             </div>
         );

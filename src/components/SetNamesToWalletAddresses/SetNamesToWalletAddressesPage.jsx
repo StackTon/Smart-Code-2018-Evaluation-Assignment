@@ -75,8 +75,8 @@ class SetNamesToWalletAddresses extends Component {
         }
 
         return (
-            <div>
-                <h1>Edit Mult Sig Wallet: {walletName}</h1>
+            <div className="add">
+                <h2>Edit Mult Sig Wallet: {walletName}</h2>
                 <form onSubmit={this.onSubmitNameHandler}>
                     <Input
                         name='walletName'
@@ -85,7 +85,7 @@ class SetNamesToWalletAddresses extends Component {
                         label='Set name'
                     />
 
-                    <input type='submit' value='Edit' />
+                    <input type="submit" className="btn btn-outline-success" type='submit' value='Set' />
                 </form>
 
 
