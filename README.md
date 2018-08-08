@@ -5,4 +5,4 @@
 - open command prompt in project folder
 - type ``` npm i ```
 - then type ``` npm start ```
-- then opne in browser ``` http://localhost:3000/ ```
+- then open in browser ``` http://localhost:3000/ ```

@@ -7,9 +7,9 @@ class SetNamesToWalletAddresses extends Component {
 
         this.state = {
             walletAddress: this.props.match.params.walletAddress,
-            walletName: "",
-            walletData: "",
-            owenersHTML: ""
+            walletName: '',
+            walletData: '',
+            owenersHTML: ''
         }
 
         // bind
@@ -23,13 +23,13 @@ class SetNamesToWalletAddresses extends Component {
 
 
         /* TODO implemt render owners address
-        let ownersHTML = ""
+        let ownersHTML = ''
 
         if (this.state.contractData) {
-            console.log("qwewqe")
+            console.log('qwewqe')
             this.state.contractData.owners.map((address, index) => {
 
-                let ownerName = "owner: " + index
+                let ownerName = 'owner: ' + index
                 this.setState({ ownerName: address })
 
                 ownersHTML += (
@@ -54,7 +54,7 @@ class SetNamesToWalletAddresses extends Component {
     onSubmitNameHandler(e) {
         e.preventDefault();
 
-        if (this.state.walletName !== "") {
+        if (this.state.walletName !== '') {
             let regex = /(?:\()(.*)(?:\))/g;
 
             let oldWalletName = this.state.walletAddress

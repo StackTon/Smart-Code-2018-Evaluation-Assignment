@@ -8,6 +8,7 @@ class AddMultWallet extends Component {
 
         this.state = {
             walletAddress: '',
+            walletName: '',
             web3: null
         };
 
@@ -65,7 +66,17 @@ class AddMultWallet extends Component {
                                 handleError(err);
 
                                 addressDetails.required = required + '';
-                                localStorage.setItem(this.state.walletAddress, JSON.stringify(addressDetails));
+
+                                let newWalletAddress = this.state.walletAddress;
+                                
+                                if(this.state.walletName !== ''){
+                                    newWalletAddress = `${this.state.walletName} (${this.state.walletAddress})`
+                                }
+
+                                // TODO implement usage statistics
+
+                                localStorage.setItem(newWalletAddress, JSON.stringify(addressDetails));
+                                
                             })
                         })
                     })
@@ -84,6 +95,13 @@ class AddMultWallet extends Component {
                         value={this.state.walletAddress}
                         onChange={this.onChangeHandler}
                         label='Wfallet Address'
+                    />
+
+                    <Input
+                        name='walletName'
+                        value={this.state.walletName}
+                        onChange={this.onChangeHandler}
+                        label='Wallet Name (optional)'
                     />
                     <input type='submit' value='Add' />
                 </form>
