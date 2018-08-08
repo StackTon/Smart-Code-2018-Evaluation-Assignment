@@ -49,7 +49,7 @@ class AddMultWallet extends Component {
                 this.state.web3.eth.getBalance(this.state.walletAddress, (err, contractBalance) => {
                     handleError(err);
 
-                    let addressDetails = {};
+                    let addressDetails = {walletName: ''};
                     addressDetails.balance = this.state.web3.fromWei(contractBalance, 'ether');
 
                     contractInstance.getOwners.call((err, owners) => {
@@ -70,10 +70,9 @@ class AddMultWallet extends Component {
                                 let newWalletAddress = this.state.walletAddress;
 
                                 if (this.state.walletName !== '') {
-                                    newWalletAddress = `${this.state.walletName} (${this.state.walletAddress})`
+                                    addressDetails.walletName = this.state.walletName;
                                 }
 
-                                // TODO implement usage statistics
                                 contractInstance.transactionCount.call((err, transactionCount) => {
                                     handleError(err);
 
@@ -93,11 +92,7 @@ class AddMultWallet extends Component {
                                             localStorage.setItem(newWalletAddress, JSON.stringify(addressDetails));
                                         }
                                     }
-
                                 })
-
-                                
-
                             })
                         })
                     })

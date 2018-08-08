@@ -19,7 +19,7 @@ class SetNamesToWalletAddresses extends Component {
 
     componentDidMount() {
 
-        this.setState({ walletData:  JSON.parse(localStorage.getItem(this.props.match.params.walletAddress))});
+        this.setState({ walletData: JSON.parse(localStorage.getItem(this.props.match.params.walletAddress)) });
 
 
         /* TODO implemt render owners address
@@ -54,26 +54,14 @@ class SetNamesToWalletAddresses extends Component {
     onSubmitNameHandler(e) {
         e.preventDefault();
 
-        if (this.state.walletName !== '') {
-            let regex = /(?:\()(.*)(?:\))/g;
+        let walletData = this.state.walletData
 
-            let oldWalletName = this.state.walletAddress
+        walletData.walletName = this.state.walletName;
 
-            let addr = regex.exec(this.state.walletAddress);
+        this.setState({ walletData });
 
-            let newWalletAddress = this.state.walletAddress;
+        localStorage.setItem(this.state.walletAddress, JSON.stringify(walletData));
 
-            if (addr) {
-                newWalletAddress = addr[1];
-            }
-
-            let contractFullName = this.state.walletName + ` (${newWalletAddress})`;
-
-            this.setState({ walletAddress: contractFullName })
-
-            localStorage.removeItem(oldWalletName);
-            localStorage.setItem(contractFullName, JSON.stringify(this.state.walletData));
-        }
     }
 
     onChangeHandler(e) {
@@ -81,10 +69,14 @@ class SetNamesToWalletAddresses extends Component {
     }
 
     render() {
+        let walletName = this.state.walletAddress;
+        if (this.state.walletData.walletName !== '') {
+            walletName = `${this.state.walletData.walletName} (${this.state.walletAddress})`
+        }
 
         return (
             <div>
-                <h1>Edit Mult Sig Wallet: {this.state.walletAddress}</h1>
+                <h1>Edit Mult Sig Wallet: {walletName}</h1>
                 <form onSubmit={this.onSubmitNameHandler}>
                     <Input
                         name='walletName'

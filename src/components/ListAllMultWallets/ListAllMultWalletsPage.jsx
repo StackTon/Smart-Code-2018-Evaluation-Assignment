@@ -25,6 +25,7 @@ class ListAllMultWallets extends Component {
 
             let wallet = {
                 'address': key,
+                'walletName': addressDetails.walletName,
                 'balance': addressDetails.balance,
                 'owners': addressDetails.owners,
                 'required': addressDetails.required,
@@ -67,10 +68,14 @@ class ListAllMultWallets extends Component {
                 <h1>List All Mult Sig Wallets</h1>
                 <section>
                     {this.state.wallets.map((walletData) => {
-                        console.log(walletData);
+                        let walletName = walletData.address;
+                        if(walletData.walletName !== ''){
+                            walletName = `${walletData.walletName} (${walletData.address})`
+                        }
+
                         return (
                             <article key={walletData.address}>
-                                <div>address: {walletData.address}</div>
+                                <div>address: {walletName}</div>
                                 <div>balance: {walletData.balance} Ether</div>
                                 <div>owners: {walletData.owners.map((ownerAddress) => {
                                     return <p key={ownerAddress}>{ownerAddress}</p>
