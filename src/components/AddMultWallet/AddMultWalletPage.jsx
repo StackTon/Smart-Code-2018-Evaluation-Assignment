@@ -49,7 +49,7 @@ class AddMultWallet extends Component {
                 this.state.web3.eth.getBalance(this.state.walletAddress, (err, contractBalance) => {
                     handleError(err);
 
-                    let addressDetails = {walletName: ''};
+                    let addressDetails = { walletName: '' };
                     addressDetails.balance = this.state.web3.fromWei(contractBalance, 'ether');
 
                     contractInstance.getOwners.call((err, owners) => {
@@ -78,18 +78,27 @@ class AddMultWallet extends Component {
 
                                     addressDetails.transactionCount = Number(transactionCount + '');
 
-                                    addressDetails.averageTransactionAmount = 0;
+                                    let averageTransactionAmount = 0;
 
                                     for (let i = 0; i < transactionCount; i++) {
-                                        contractInstance.transactions.call(i, (err, transactionInfo) => {
-                                            let ethers = this.state.web3.fromWei(transactionInfo.value, 'ether');
-                                            addressDetails.averageTransactionAmount += ethers;
-                                        })
+                                        if (i !== transactionCount - 1) {
+                                            contractInstance.transactions.call(i, (err, transactionInfo) => {
+                                                handleError(err);
+                                                let ethers = Number(this.state.web3.fromWei(transactionInfo[1], 'ether') + '');
+                                                averageTransactionAmount += ethers;
 
-                                        if (i === transactionCount - 1) {
-                                            addressDetails.averageTransactionAmount /= addressDetails.transactionCount;
-                                            
-                                            localStorage.setItem(newWalletAddress, JSON.stringify(addressDetails));
+                                            })
+                                        }
+                                        else {
+                                            contractInstance.transactions.call(i, (err, transactionInfo) => {
+                                                handleError(err);
+                                                let ethers = Number(this.state.web3.fromWei(transactionInfo[1], 'ether') + '');
+                                                averageTransactionAmount += ethers;
+                                                averageTransactionAmount /= addressDetails.transactionCount;
+                                                addressDetails.averageTransactionAmount = averageTransactionAmount;
+                                                localStorage.setItem(newWalletAddress, JSON.stringify(addressDetails));
+                                            })
+
                                         }
                                     }
                                 })
