@@ -68,15 +68,36 @@ class AddMultWallet extends Component {
                                 addressDetails.required = required + '';
 
                                 let newWalletAddress = this.state.walletAddress;
-                                
-                                if(this.state.walletName !== ''){
+
+                                if (this.state.walletName !== '') {
                                     newWalletAddress = `${this.state.walletName} (${this.state.walletAddress})`
                                 }
 
                                 // TODO implement usage statistics
+                                contractInstance.transactionCount.call((err, transactionCount) => {
+                                    handleError(err);
 
-                                localStorage.setItem(newWalletAddress, JSON.stringify(addressDetails));
+                                    addressDetails.transactionCount = Number(transactionCount + '');
+
+                                    addressDetails.averageTransactionAmount = 0;
+
+                                    for (let i = 0; i < transactionCount; i++) {
+                                        contractInstance.transactions.call(i, (err, transactionInfo) => {
+                                            let ethers = this.state.web3.fromWei(transactionInfo.value, 'ether');
+                                            addressDetails.averageTransactionAmount += ethers;
+                                        })
+
+                                        if (i === transactionCount - 1) {
+                                            addressDetails.averageTransactionAmount /= addressDetails.transactionCount;
+                                            console.log(addressDetails)
+                                            localStorage.setItem(newWalletAddress, JSON.stringify(addressDetails));
+                                        }
+                                    }
+
+                                })
+
                                 
+
                             })
                         })
                     })

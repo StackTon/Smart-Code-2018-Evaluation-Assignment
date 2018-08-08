@@ -28,7 +28,9 @@ class ListAllMultWallets extends Component {
                 'balance': addressDetails.balance,
                 'owners': addressDetails.owners,
                 'required': addressDetails.required,
-                'dailyLimit': addressDetails.dailyLimit
+                'dailyLimit': addressDetails.dailyLimit,
+                'averageTransactionAmount': addressDetails.averageTransactionAmount,
+                'transactionCount': addressDetails.transactionCount
             };
 
             wallets.push(wallet);
@@ -65,7 +67,7 @@ class ListAllMultWallets extends Component {
                 <h1>List All Mult Sig Wallets</h1>
                 <section>
                     {this.state.wallets.map((walletData) => {
-
+                        console.log(walletData);
                         return (
                             <article key={walletData.address}>
                                 <div>address: {walletData.address}</div>
@@ -73,8 +75,10 @@ class ListAllMultWallets extends Component {
                                 <div>owners: {walletData.owners.map((ownerAddress) => {
                                     return <p key={ownerAddress}>{ownerAddress}</p>
                                 })}</div>
-                                <div>required: {walletData.required} Ether</div>
+                                <div>required: {walletData.required} of {walletData.owners.length} </div>
                                 <div>dailyLimit: {walletData.dailyLimit} Ether</div>
+                                <div>Transaction Count: {walletData.transactionCount}</div>
+                                <div>Average Transaction Amount: {walletData.averageTransactionAmount}</div>
                                 <button onClick={() => this.walletDelete(walletData.address)}>Delete</button>
                                 <button onClick={() => this.walletSetNamesToAddress(walletData.address)}>Edit</button>
                             </article>
