@@ -11,6 +11,7 @@ class ListAllMultWallets extends Component {
         // bind
 
         this.walletDelete = this.walletDelete.bind(this);
+        this.walletSetNamesToAddress = this.walletSetNamesToAddress.bind(this);
     }
 
     componentDidMount() {
@@ -39,7 +40,23 @@ class ListAllMultWallets extends Component {
     }
 
     walletDelete(address) {
-        //TODO
+        localStorage.removeItem(address);
+
+        let wallets = this.state.wallets;
+
+        for (let i = 0; i < wallets.length; i++) {
+            const wallet = wallets[i];
+            if(wallet.address === address){
+            
+                wallets.splice(i, 1);
+            }
+        }
+
+        this.setState({ wallets });
+    }
+
+    walletSetNamesToAddress(address) {
+        this.props.history.push('/wallet/' + address);
     }
 
     render() {
@@ -58,7 +75,8 @@ class ListAllMultWallets extends Component {
                                 })}</div>
                                 <div>required: {walletData.required} Ether</div>
                                 <div>dailyLimit: {walletData.dailyLimit} Ether</div>
-                                <button onClick={this.walletDelete(walletData.address)}>Delete</button>
+                                <button onClick={() => this.walletDelete(walletData.address)}>Delete</button>
+                                <button onClick={() => this.walletSetNamesToAddress(walletData.address)}>Edit</button>
                             </article>
                         )
                     })}

@@ -7,7 +7,7 @@ class AddMultWallet extends Component {
         super(props);
 
         this.state = {
-            address: '',
+            walletAddress: '',
             web3: null
         };
 
@@ -38,14 +38,14 @@ class AddMultWallet extends Component {
         e.preventDefault();
         //TODO check if address is valid
 
-        const contractInstance = this.state.web3.eth.contract(MutSigWalletABI).at(this.state.address);
+        const contractInstance = this.state.web3.eth.contract(MutSigWalletABI).at(this.state.walletAddress);
 
         contractInstance.MAX_OWNER_COUNT.call((err, res) => {
             handleError(err);
 
             //TODO implement better checking for mutSig walltes
             if (Number(res + '') === 50) {
-                this.state.web3.eth.getBalance(this.state.address, (err, contractBalance) => {
+                this.state.web3.eth.getBalance(this.state.walletAddress, (err, contractBalance) => {
                     handleError(err);
 
                     let addressDetails = {};
@@ -65,7 +65,7 @@ class AddMultWallet extends Component {
                                 handleError(err);
 
                                 addressDetails.required = required + '';
-                                localStorage.setItem(this.state.address, JSON.stringify(addressDetails));
+                                localStorage.setItem(this.state.walletAddress, JSON.stringify(addressDetails));
                             })
                         })
                     })
@@ -80,12 +80,12 @@ class AddMultWallet extends Component {
                 <h2>Add Mult Sig Wallet</h2>
                 <form onSubmit={this.onSubmitHandler}>
                     <Input
-                        name='address'
-                        value={this.state.address}
+                        name='walletAddress'
+                        value={this.state.walletAddress}
                         onChange={this.onChangeHandler}
-                        label='Address'
+                        label='Wfallet Address'
                     />
-                    <input className='btn btn-outline-primary' type='submit' value='Add' />
+                    <input type='submit' value='Add' />
                 </form>
             </div>
         );
@@ -93,8 +93,10 @@ class AddMultWallet extends Component {
 }
 
 function handleError(err) {
-    console.log(err);
-    return;
+    if (err) {
+        console.log(err);
+        return;
+    }
 }
 
 export default AddMultWallet;
