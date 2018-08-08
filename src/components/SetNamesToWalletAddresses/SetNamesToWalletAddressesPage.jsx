@@ -85,7 +85,7 @@ class SetNamesToWalletAddresses extends Component {
                         label='Set name'
                     />
 
-                    <input type="submit" className="btn btn-outline-success" type='submit' value='Set' />
+                    <input type="submit" className="btn btn-info" type='submit' value='Set' />
                 </form>
 
 

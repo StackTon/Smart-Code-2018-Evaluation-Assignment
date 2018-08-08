@@ -113,7 +113,7 @@ class AddMultWallet extends Component {
     render() {
         return (
             <div className="add">
-                <h2>Add Mult Sig Wallet</h2>
+                <h1>Add Mult Sig Wallet</h1>
                 <form onSubmit={this.onSubmitHandler}>
                     <Input
                         name='walletAddress'
@@ -128,7 +128,7 @@ class AddMultWallet extends Component {
                         onChange={this.onChangeHandler}
                         label='Wallet Name (optional)'
                     />
-                    <input type="submit" className="btn btn-outline-success" value='Add' />
+                    <input type="submit" className="btn btn-info" value='Add' />
                 </form>
             </div>
         );
