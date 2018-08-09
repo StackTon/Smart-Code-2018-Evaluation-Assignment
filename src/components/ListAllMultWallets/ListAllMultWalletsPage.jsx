@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import toastr from 'toastr';
 
 class ListAllMultWallets extends Component {
     constructor(props) {
@@ -55,6 +56,7 @@ class ListAllMultWallets extends Component {
             }
         }
 
+        toastr.success('The wallet was deleted successfully')
         this.setState({ wallets });
     }
 
@@ -127,8 +129,8 @@ class ListAllMultWallets extends Component {
                                     </tbody>
                                 </table >
                                 <div className='buttons'>
-                                    <button type='button' className='btn btn-danger' onClick={() => this.walletDelete(walletData.address)}>Delete</button>
-                                    <button type='button' className='btn btn-info' onClick={() => this.walletSetNamesToAddress(walletData.address)}>Edit</button>
+                                    <button type='button' className='btn btn-danger btn-lg' onClick={() => this.walletDelete(walletData.address)}>Delete</button>
+                                    <button type='button' className='btn btn-info btn-lg' onClick={() => this.walletSetNamesToAddress(walletData.address)}>Edit</button>
                                 </div>
                             </article>
                         )

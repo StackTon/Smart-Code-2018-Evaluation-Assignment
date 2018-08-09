@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Input from '../common/Input';
 import { getWeb3, MutSigWalletABI } from '../../api/remote.js';
+import toastr from 'toastr';
 
 class AddMultWallet extends Component {
     constructor(props) {
@@ -35,29 +36,45 @@ class AddMultWallet extends Component {
         this.setState({ [e.target.name]: e.target.value });
     }
 
+
     onSubmitHandler(e) {
         e.preventDefault();
-        //TODO check if address is valid
+
+        toastr.info('Loading...');
 
         const contractInstance = this.state.web3.eth.contract(MutSigWalletABI).at(this.state.walletAddress);
 
         contractInstance.MAX_OWNER_COUNT.call((err, res) => {
-            handleError(err);
+            if (err) {
+                toastr.clear()
+                toastr.error('ERROR!');
+                console.log(err);
+                return;
+            }
 
-            //TODO implement better checking for mutSig walltes
             if (Number(res + '') === 50) {
                 this.state.web3.eth.getBalance(this.state.walletAddress, (err, contractBalance) => {
-                    handleError(err);
+                    if (err) {
+                        toastr.clear()
+                        toastr.error('ERROR!');
+                        console.log(err);
+                        return;
+                    }
 
                     let addressDetails = { walletName: '' };
                     addressDetails.balance = this.state.web3.fromWei(contractBalance, 'ether');
 
                     contractInstance.getOwners.call((err, ownersArr) => {
-                        handleError(err);
+                        if (err) {
+                            toastr.clear()
+                            toastr.error('ERROR!');
+                            console.log(err);
+                            return;
+                        }
 
                         let owners = [];
 
-                        for(let owner of ownersArr){
+                        for (let owner of ownersArr) {
                             let obj = {}
                             obj.address = owner;
                             obj.name = '';
@@ -67,12 +84,22 @@ class AddMultWallet extends Component {
                         addressDetails.owners = owners;
 
                         contractInstance.dailyLimit.call((err, dailyLimit) => {
-                            handleError(err);
+                            if (err) {
+                                toastr.clear()
+                                toastr.error('ERROR!');
+                                console.log(err);
+                                return;
+                            }
 
                             addressDetails.dailyLimit = this.state.web3.fromWei(dailyLimit, 'ether');
 
                             contractInstance.required.call((err, required) => {
-                                handleError(err);
+                                if (err) {
+                                    toastr.clear()
+                                    toastr.error('ERROR!');
+                                    console.log(err);
+                                    return;
+                                }
 
                                 addressDetails.required = required + '';
 
@@ -83,7 +110,12 @@ class AddMultWallet extends Component {
                                 }
 
                                 contractInstance.transactionCount.call((err, transactionCount) => {
-                                    handleError(err);
+                                    if (err) {
+                                        toastr.clear()
+                                        toastr.error('ERROR!');
+                                        console.log(err);
+                                        return;
+                                    }
 
                                     addressDetails.transactionCount = Number(transactionCount + '');
 
@@ -92,7 +124,12 @@ class AddMultWallet extends Component {
                                     for (let i = 0; i < transactionCount; i++) {
                                         if (i !== transactionCount - 1) {
                                             contractInstance.transactions.call(i, (err, transactionInfo) => {
-                                                handleError(err);
+                                                if (err) {
+                                                    toastr.clear()
+                                                    toastr.error('ERROR!');
+                                                    console.log(err);
+                                                    return;
+                                                }
                                                 let ethers = Number(this.state.web3.fromWei(transactionInfo[1], 'ether') + '');
                                                 averageTransactionAmount += ethers;
 
@@ -100,14 +137,21 @@ class AddMultWallet extends Component {
                                         }
                                         else {
                                             contractInstance.transactions.call(i, (err, transactionInfo) => {
-                                                handleError(err);
+                                                if (err) {
+                                                    toastr.clear()
+                                                    toastr.error('ERROR!');
+                                                    console.log(err);
+                                                    
+                                                }
                                                 let ethers = Number(this.state.web3.fromWei(transactionInfo[1], 'ether') + '');
                                                 averageTransactionAmount += ethers;
                                                 averageTransactionAmount /= addressDetails.transactionCount;
                                                 addressDetails.averageTransactionAmount = averageTransactionAmount;
                                                 localStorage.setItem(newWalletAddress, JSON.stringify(addressDetails));
+                                                toastr.clear()
+                                                toastr.success('The new wallet was added successfuly')
+                                                this.props.history.push('');
                                             })
-
                                         }
                                     }
                                 })
@@ -115,6 +159,11 @@ class AddMultWallet extends Component {
                         })
                     })
                 });
+            }
+            else{
+                toastr.clear()
+                toastr.error('ERROR!');
+                return;
             }
         })
     }
@@ -137,17 +186,10 @@ class AddMultWallet extends Component {
                         onChange={this.onChangeHandler}
                         label='Wallet Name (optional)'
                     />
-                    <input type='submit' className='btn btn-info' value='Add' />
+                    <input type='submit' className='btn btn-info btn-lg' value='Add' />
                 </form>
             </div>
         );
-    }
-}
-
-function handleError(err) {
-    if (err) {
-        console.log(err);
-        return;
     }
 }
 
