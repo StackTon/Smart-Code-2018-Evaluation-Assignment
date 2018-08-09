@@ -52,8 +52,17 @@ class AddMultWallet extends Component {
                     let addressDetails = { walletName: '' };
                     addressDetails.balance = this.state.web3.fromWei(contractBalance, 'ether');
 
-                    contractInstance.getOwners.call((err, owners) => {
+                    contractInstance.getOwners.call((err, ownersArr) => {
                         handleError(err);
+
+                        let owners = [];
+
+                        for(let owner of ownersArr){
+                            let obj = {}
+                            obj.address = owner;
+                            obj.name = '';
+                            owners.push(obj);
+                        }
 
                         addressDetails.owners = owners;
 
@@ -112,8 +121,8 @@ class AddMultWallet extends Component {
 
     render() {
         return (
-            <div className="add">
-                <h1>Add Mult Sig Wallet</h1>
+            <div className='add'>
+                <h1>Add Multi Signature Wallet</h1>
                 <form onSubmit={this.onSubmitHandler}>
                     <Input
                         name='walletAddress'
@@ -128,7 +137,7 @@ class AddMultWallet extends Component {
                         onChange={this.onChangeHandler}
                         label='Wallet Name (optional)'
                     />
-                    <input type="submit" className="btn btn-info" value='Add' />
+                    <input type='submit' className='btn btn-info' value='Add' />
                 </form>
             </div>
         );

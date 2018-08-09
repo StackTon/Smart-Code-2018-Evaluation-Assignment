@@ -65,7 +65,7 @@ class ListAllMultWallets extends Component {
     render() {
         return (
             <div>
-                <h1>List All Mult Sig Wallets</h1>
+                <h1>List All Multi Signature Wallets</h1>
                 <section>
                     {this.state.wallets.map((walletData) => {
                         let walletName = walletData.address;
@@ -74,50 +74,61 @@ class ListAllMultWallets extends Component {
                         }
 
                         return (
-                            <article className="card" key={walletData.address}>
-                                <table className="card-body table table-borderless">
+                            <article className='card' key={walletData.address}>
+                                <table className='card-body table table-borderless'>
                                     <tbody>
-                                        <tr className="card-text">
+                                        <tr className='card-text'>
                                             <td>Address:</td>
                                             <td>{walletName}</td>
                                         </tr>
-                                        <tr className="card-text">
+                                        <tr className='card-text'>
                                             <td>Balance:</td>
                                             <td>{walletData.balance} Ethers</td>
                                         </tr>
-                                        <tr className="card-text">
+                                        <tr className='card-text'>
                                             <td>Owners:</td>
                                             <td>
-                                                <ul className="list-group">
-                                                    {walletData.owners.map((ownerAddress) => {
-                                                        return <li className="list-group-item" key={ownerAddress}>{ownerAddress}</li>
+                                                <ul className='list-group'>
+                                                    {walletData.owners.map((owner) => {
+                                                        let ownerName = owner.address;
+                                                        if(owner.name !== ''){
+                                                            ownerName = (
+                                                                <div>
+                                                                    <p>{owner.name}</p>
+                                                                    <p>({owner.address})</p>
+                                                                </div>
+                                                            )
+                                                        }
+                                                        return <li className='list-group-item' key={owner.address}>
+                                                            {ownerName}
+                                                        </li>
                                                     })}
                                                 </ul>
                                             </td>
 
                                         </tr>
-                                        <tr className="card-text">
-                                            <td>Required:</td>
+                                        <tr className='card-text'>
+                                            <td>Number of owner signatures required to confirm a transaction:</td>
                                             <td>{walletData.required} of {walletData.owners.length}</td>
                                         </tr>
-                                        <tr className="card-text">
+                                        <tr className='card-text'>
                                             <td>Daily Limit:</td>
                                             <td>{walletData.dailyLimit} Ethers</td>
                                         </tr>
-                                        <tr className="card-text">
+                                        <tr className='card-text'>
                                             <td>Total transactions:</td>
                                             <td>{walletData.transactionCount}</td>
                                         </tr>
-                                        <tr className="card-text">
+                                        <tr className='card-text'>
                                             <td>Average Transaction Amount:</td>
                                             <td>{walletData.averageTransactionAmount} Ethers</td>
                                         </tr>
 
                                     </tbody>
                                 </table >
-                                <div className="buttons">
-                                    <button type="button" className="btn btn-danger" onClick={() => this.walletDelete(walletData.address)}>Delete</button>
-                                    <button type="button" className="btn btn-info" onClick={() => this.walletSetNamesToAddress(walletData.address)}>Edit</button>
+                                <div className='buttons'>
+                                    <button type='button' className='btn btn-danger' onClick={() => this.walletDelete(walletData.address)}>Delete</button>
+                                    <button type='button' className='btn btn-info' onClick={() => this.walletSetNamesToAddress(walletData.address)}>Edit</button>
                                 </div>
                             </article>
                         )
