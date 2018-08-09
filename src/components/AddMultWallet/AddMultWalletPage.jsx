@@ -43,7 +43,7 @@ class AddMultWallet extends Component {
         toastr.info('Loading...');
 
         const contractInstance = this.state.web3.eth.contract(MutSigWalletABI).at(this.state.walletAddress);
-        if(!this.state.web3.isAddress(this.state.walletAddress)){
+        if (!this.state.web3.isAddress(this.state.walletAddress)) {
             toastr.clear();
             toastr.error('Invalid address!');
             return;
@@ -126,6 +126,14 @@ class AddMultWallet extends Component {
 
                                     let averageTransactionAmount = 0;
 
+                                    if (addressDetails.transactionCount === 0) {
+                                        addressDetails.averageTransactionAmount = 0;
+                                        localStorage.setItem(newWalletAddress, JSON.stringify(addressDetails));
+                                        toastr.clear();
+                                        toastr.success('The new wallet was added successfuly');
+                                        this.props.history.push('');
+                                    }
+
                                     for (let i = 0; i < transactionCount; i++) {
                                         if (i !== transactionCount - 1) {
                                             contractInstance.transactions.call(i, (err, transactionInfo) => {
@@ -146,7 +154,7 @@ class AddMultWallet extends Component {
                                                     toastr.clear();
                                                     toastr.error('ERROR!');
                                                     console.log(err);
-                                                    
+
                                                 }
                                                 let ethers = Number(this.state.web3.fromWei(transactionInfo[1], 'ether') + '');
                                                 averageTransactionAmount += ethers;
@@ -165,7 +173,7 @@ class AddMultWallet extends Component {
                     })
                 });
             }
-            else{
+            else {
                 toastr.clear();
                 toastr.error('ERROR!');
                 return;
