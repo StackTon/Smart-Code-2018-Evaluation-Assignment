@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Input from '../common/Input';
 import { getWeb3, MutSigWalletABI } from '../../api/remote.js';
 import toastr from 'toastr';
+import { isNull } from 'util';
 
 class AddMultWallet extends Component {
     constructor(props) {
@@ -45,23 +46,30 @@ class AddMultWallet extends Component {
         const contractInstance = this.state.web3.eth.contract(MutSigWalletABI).at(this.state.walletAddress);
         if (!this.state.web3.isAddress(this.state.walletAddress)) {
             toastr.clear();
-            toastr.error('Invalid address!');
+            toastr.error('Invalid address!!');
             return;
         }
 
         contractInstance.MAX_OWNER_COUNT.call((err, res) => {
             if (err) {
                 toastr.clear();
-                toastr.error('ERROR!');
+                toastr.error('Invalid address!');
                 console.log(err);
                 return;
+            }
+
+            if(!isNull(localStorage.getItem(this.state.walletAddress))){
+                toastr.clear();
+                        toastr.error('This address already exist!');
+                        console.log(err);
+                        return;
             }
 
             if (Number(res + '') === 50) {
                 this.state.web3.eth.getBalance(this.state.walletAddress, (err, contractBalance) => {
                     if (err) {
                         toastr.clear();
-                        toastr.error('ERROR!');
+                        toastr.error('Invalid address!');
                         console.log(err);
                         return;
                     }
@@ -72,7 +80,7 @@ class AddMultWallet extends Component {
                     contractInstance.getOwners.call((err, ownersArr) => {
                         if (err) {
                             toastr.clear();
-                            toastr.error('ERROR!');
+                            toastr.error('Invalid address!');
                             console.log(err);
                             return;
                         }
@@ -80,7 +88,7 @@ class AddMultWallet extends Component {
                         let owners = [];
 
                         for (let owner of ownersArr) {
-                            let obj = {}
+                            let obj = {};
                             obj.address = owner;
                             obj.name = '';
                             owners.push(obj);
@@ -91,7 +99,7 @@ class AddMultWallet extends Component {
                         contractInstance.dailyLimit.call((err, dailyLimit) => {
                             if (err) {
                                 toastr.clear();
-                                toastr.error('ERROR!');
+                                toastr.error('Invalid address!');
                                 console.log(err);
                                 return;
                             }
@@ -101,7 +109,7 @@ class AddMultWallet extends Component {
                             contractInstance.required.call((err, required) => {
                                 if (err) {
                                     toastr.clear();
-                                    toastr.error('ERROR!');
+                                    toastr.error('Invalid address!');
                                     console.log(err);
                                     return;
                                 }
@@ -117,7 +125,7 @@ class AddMultWallet extends Component {
                                 contractInstance.transactionCount.call((err, transactionCount) => {
                                     if (err) {
                                         toastr.clear();
-                                        toastr.error('ERROR!');
+                                        toastr.error('Invalid address!');
                                         console.log(err);
                                         return;
                                     }
@@ -130,7 +138,7 @@ class AddMultWallet extends Component {
                                         addressDetails.averageTransactionAmount = 0;
                                         localStorage.setItem(newWalletAddress, JSON.stringify(addressDetails));
                                         toastr.clear();
-                                        toastr.success('The new wallet was added successfuly');
+                                        toastr.success('The new wallet was added successfully');
                                         this.props.history.push('');
                                     }
 
@@ -139,7 +147,7 @@ class AddMultWallet extends Component {
                                             contractInstance.transactions.call(i, (err, transactionInfo) => {
                                                 if (err) {
                                                     toastr.clear();
-                                                    toastr.error('ERROR!');
+                                                    toastr.error('Invalid address!');
                                                     console.log(err);
                                                     return;
                                                 }
@@ -152,7 +160,7 @@ class AddMultWallet extends Component {
                                             contractInstance.transactions.call(i, (err, transactionInfo) => {
                                                 if (err) {
                                                     toastr.clear();
-                                                    toastr.error('ERROR!');
+                                                    toastr.error('Invalid address!');
                                                     console.log(err);
 
                                                 }
@@ -162,7 +170,7 @@ class AddMultWallet extends Component {
                                                 addressDetails.averageTransactionAmount = averageTransactionAmount;
                                                 localStorage.setItem(newWalletAddress, JSON.stringify(addressDetails));
                                                 toastr.clear()
-                                                toastr.success('The new wallet was added successfuly')
+                                                toastr.success('The new wallet was added successfully')
                                                 this.props.history.push('');
                                             })
                                         }
@@ -175,7 +183,7 @@ class AddMultWallet extends Component {
             }
             else {
                 toastr.clear();
-                toastr.error('ERROR!');
+                toastr.error('Invalid address!');
                 return;
             }
         })

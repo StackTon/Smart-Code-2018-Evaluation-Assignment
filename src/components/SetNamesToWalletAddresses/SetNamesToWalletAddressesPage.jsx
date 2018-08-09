@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Input from '../common/Input';
 import toastr from 'toastr';
+import { isNull } from 'util';
+import { Redirect } from 'react-router';
 
 class SetNamesToWalletAddresses extends Component {
     constructor(props) {
@@ -22,17 +24,19 @@ class SetNamesToWalletAddresses extends Component {
     componentDidMount() {
         let walletData = JSON.parse(localStorage.getItem(this.props.match.params.walletAddress));
 
-        this.setState({ walletData });
-        this.setState({ walletName: walletData.walletName });
+        if (!isNull(walletData)) {
+            this.setState({ walletData });
+            this.setState({ walletName: walletData.walletName });
 
-        walletData.owners.map((owner, index) => {
-            let obj = { 'name': owner.name, 'address': owner.address };
-            this.setState(prevState => {
+            walletData.owners.map((owner, index) => {
+                let obj = { 'name': owner.name, 'address': owner.address };
+                this.setState(prevState => {
 
-                prevState.ownersState.push(obj);
-                return { ownersState: prevState.ownersState };
+                    prevState.ownersState.push(obj);
+                    return { ownersState: prevState.ownersState };
+                });
             })
-        })
+        }
     }
 
     onChangeHandler(e) {
@@ -53,7 +57,7 @@ class SetNamesToWalletAddresses extends Component {
     }
 
     onSubmitNameHandler(e) {
-        let walletData = this.state.walletData
+        let walletData = this.state.walletData;
 
         walletData.walletName = this.state.walletName;
 
@@ -80,49 +84,53 @@ class SetNamesToWalletAddresses extends Component {
     }
 
     render() {
-        let walletData = JSON.parse(localStorage.getItem(this.props.match.params.walletAddress))
+        let walletData = JSON.parse(localStorage.getItem(this.props.match.params.walletAddress));
 
-        console.log(this.state);
-        return (
-            <div className='add'>
-                <h2>Set custome names to wallet and owner addresses</h2>
-                <form>
-                    <Input
-                        name='walletName'
-                        value={this.state.walletName}
-                        onChange={this.onChangeHandler}
-                        label={'wallet: ' + this.state.walletAddress}
-                    />
+        if (isNull(walletData)) {
+            return <Redirect to='/page-not-found' />;
+        }
+        else {
+            return (
+                <div className='add'>
+                    <h2>Set custome names to wallet and owner addresses</h2>
+                    <form>
+                        <Input
+                            name='walletName'
+                            value={this.state.walletName}
+                            onChange={this.onChangeHandler}
+                            label={'wallet: ' + this.state.walletAddress}
+                        />
 
-                    <input type='button' onClick={this.onSubmitNameHandler} className='btn btn-info btn-lg' value='Set custom name' />
-                </form>
+                        <input type='button' onClick={this.onSubmitNameHandler} className='btn btn-info btn-lg' value='Set custom name' />
+                    </form>
 
 
-                {walletData.owners.map((owner, index) => {
+                    {walletData.owners.map((owner, index) => {
 
-                    let ownerName = 'owner: ' + owner.address;
+                        let ownerName = 'owner: ' + owner.address;
 
-                    let ownerState = this.state.ownersState[index]
+                        let ownerState = this.state.ownersState[index]
 
-                    if (!ownerState) {
-                        return
-                    }
+                        if (!ownerState) {
+                            return
+                        }
 
-                    return (
-                        <form key={owner.address}>
-                            <Input
-                                name={index}
-                                value={this.state.ownersState[index].name}
-                                onChange={this.onChangeOwnerNameHandler}
-                                label={ownerName}
-                            />
+                        return (
+                            <form key={owner.address}>
+                                <Input
+                                    name={index}
+                                    value={this.state.ownersState[index].name}
+                                    onChange={this.onChangeOwnerNameHandler}
+                                    label={ownerName}
+                                />
 
-                            <input type='button' onClick={() => { this.onSubmitEditOwnerHandler(index, this.state.ownersState[index].name, owner.address) }} className='btn btn-info btn-lg' value='Set custom name' />
-                        </form>
-                    )
-                })}
-            </div>
-        );
+                                <input type='button' onClick={() => { this.onSubmitEditOwnerHandler(index, this.state.ownersState[index].name, owner.address) }} className='btn btn-info btn-lg' value='Set custom name' />
+                            </form>
+                        )
+                    })}
+                </div>
+            );
+        }
     }
 }
 

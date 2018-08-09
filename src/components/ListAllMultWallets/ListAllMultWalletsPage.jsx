@@ -56,7 +56,7 @@ class ListAllMultWallets extends Component {
             }
         }
 
-        toastr.success('The wallet was deleted successfully')
+        toastr.success('The wallet was deleted successfully');
         this.setState({ wallets });
     }
 
@@ -72,7 +72,7 @@ class ListAllMultWallets extends Component {
                     {this.state.wallets.map((walletData) => {
                         let walletName = walletData.address;
                         if (walletData.walletName !== '') {
-                            walletName = `${walletData.walletName} (${walletData.address})`
+                            walletName = `${walletData.walletName} (${walletData.address})`;
                         }
 
                         return (
@@ -93,7 +93,7 @@ class ListAllMultWallets extends Component {
                                                 <ul className='list-group'>
                                                     {walletData.owners.map((owner) => {
                                                         let ownerName = owner.address;
-                                                        if(owner.name !== ''){
+                                                        if (owner.name !== '') {
                                                             ownerName = (
                                                                 <div>
                                                                     <p>{owner.name}</p>
@@ -130,7 +130,7 @@ class ListAllMultWallets extends Component {
                                 </table >
                                 <div className='buttons'>
                                     <button type='button' className='btn btn-danger btn-lg' onClick={() => this.walletDelete(walletData.address)}>Delete</button>
-                                    <button type='button' className='btn btn-info btn-lg' onClick={() => this.walletSetNamesToAddress(walletData.address)}>Edit</button>
+                                    <button type='button' className='btn btn-info btn-lg' onClick={() => this.walletSetNamesToAddress(walletData.address)}>Set custom names</button>
                                 </div>
                             </article>
                         )
