@@ -85,7 +85,7 @@ class SetNamesToWalletAddresses extends Component {
         console.log(this.state);
         return (
             <div className='add'>
-                <h2>Set custome names to wallet and owner address</h2>
+                <h2>Set custome names to wallet and owner addresses</h2>
                 <form>
                     <Input
                         name='walletName'

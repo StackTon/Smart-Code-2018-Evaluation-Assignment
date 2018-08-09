@@ -43,10 +43,15 @@ class AddMultWallet extends Component {
         toastr.info('Loading...');
 
         const contractInstance = this.state.web3.eth.contract(MutSigWalletABI).at(this.state.walletAddress);
+        if(!this.state.web3.isAddress(this.state.walletAddress)){
+            toastr.clear();
+            toastr.error('Invalid address!');
+            return;
+        }
 
         contractInstance.MAX_OWNER_COUNT.call((err, res) => {
             if (err) {
-                toastr.clear()
+                toastr.clear();
                 toastr.error('ERROR!');
                 console.log(err);
                 return;
@@ -55,7 +60,7 @@ class AddMultWallet extends Component {
             if (Number(res + '') === 50) {
                 this.state.web3.eth.getBalance(this.state.walletAddress, (err, contractBalance) => {
                     if (err) {
-                        toastr.clear()
+                        toastr.clear();
                         toastr.error('ERROR!');
                         console.log(err);
                         return;
@@ -66,7 +71,7 @@ class AddMultWallet extends Component {
 
                     contractInstance.getOwners.call((err, ownersArr) => {
                         if (err) {
-                            toastr.clear()
+                            toastr.clear();
                             toastr.error('ERROR!');
                             console.log(err);
                             return;
@@ -85,7 +90,7 @@ class AddMultWallet extends Component {
 
                         contractInstance.dailyLimit.call((err, dailyLimit) => {
                             if (err) {
-                                toastr.clear()
+                                toastr.clear();
                                 toastr.error('ERROR!');
                                 console.log(err);
                                 return;
@@ -95,7 +100,7 @@ class AddMultWallet extends Component {
 
                             contractInstance.required.call((err, required) => {
                                 if (err) {
-                                    toastr.clear()
+                                    toastr.clear();
                                     toastr.error('ERROR!');
                                     console.log(err);
                                     return;
@@ -111,7 +116,7 @@ class AddMultWallet extends Component {
 
                                 contractInstance.transactionCount.call((err, transactionCount) => {
                                     if (err) {
-                                        toastr.clear()
+                                        toastr.clear();
                                         toastr.error('ERROR!');
                                         console.log(err);
                                         return;
@@ -125,7 +130,7 @@ class AddMultWallet extends Component {
                                         if (i !== transactionCount - 1) {
                                             contractInstance.transactions.call(i, (err, transactionInfo) => {
                                                 if (err) {
-                                                    toastr.clear()
+                                                    toastr.clear();
                                                     toastr.error('ERROR!');
                                                     console.log(err);
                                                     return;
@@ -138,7 +143,7 @@ class AddMultWallet extends Component {
                                         else {
                                             contractInstance.transactions.call(i, (err, transactionInfo) => {
                                                 if (err) {
-                                                    toastr.clear()
+                                                    toastr.clear();
                                                     toastr.error('ERROR!');
                                                     console.log(err);
                                                     
@@ -161,7 +166,7 @@ class AddMultWallet extends Component {
                 });
             }
             else{
-                toastr.clear()
+                toastr.clear();
                 toastr.error('ERROR!');
                 return;
             }
